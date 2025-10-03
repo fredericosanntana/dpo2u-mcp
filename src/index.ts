@@ -27,9 +27,20 @@ import {
   CalculatePrivacyScoreTool
 } from './tools/auditInfrastructure.js';
 
+// Import OpenFHE-powered tools
+import {
+  EncryptedReportingTool,
+  PrivateBenchmarkTool,
+  ZKComplianceTool,
+  FHEExecutiveDashboardTool,
+  HomomorphicAnalyticsTool,
+  SecureDataSharingTool
+} from './tools/fheTools.js';
+
 // Import integrations
 import { LEANNIntegration } from './integrations/leann.js';
 import { OllamaIntegration } from './integrations/ollama.js';
+import { OpenFHEIntegration } from './integrations/openfhe.js';
 
 dotenv.config();
 
@@ -40,6 +51,7 @@ class DPO2UMCPServer {
   private server: Server;
   private leann: LEANNIntegration;
   private ollama: OllamaIntegration;
+  private openfhe: OpenFHEIntegration;
   private tools: Map<string, any>;
 
   constructor() {
@@ -67,6 +79,8 @@ class DPO2UMCPServer {
       process.env.OLLAMA_MODEL || 'qwen2.5:3b-instruct'
     );
 
+    this.openfhe = new OpenFHEIntegration();
+
     // Initialize tools
     this.tools = new Map();
     this.initializeTools();
@@ -83,10 +97,10 @@ class DPO2UMCPServer {
   }
 
   /**
-   * Initialize all compliance tools
+   * Initialize all compliance tools including OpenFHE-powered tools
    */
   private initializeTools(): void {
-    // Register all 10 compliance tools
+    // Register all 10 standard compliance tools
     this.tools.set('auditinfrastructure', new AuditInfrastructureTool(this.leann, this.ollama));
     this.tools.set('checkcompliance', new CheckComplianceTool(this.leann, this.ollama));
     this.tools.set('assessrisk', new AssessRiskTool(this.leann, this.ollama));
@@ -98,7 +112,15 @@ class DPO2UMCPServer {
     this.tools.set('verifyconsent', new VerifyConsentTool(this.leann));
     this.tools.set('calculateprivacyscore', new CalculatePrivacyScoreTool(this.leann));
 
-    console.log(`[DPO2U] Initialized ${this.tools.size} compliance tools`);
+    // Register 6 new OpenFHE-powered tools
+    this.tools.set('encryptedreporting', new EncryptedReportingTool(this.leann, this.ollama, this.openfhe));
+    this.tools.set('privatebenchmark', new PrivateBenchmarkTool(this.leann, this.ollama, this.openfhe));
+    this.tools.set('zkcomplianceproof', new ZKComplianceTool(this.leann, this.ollama, this.openfhe));
+    this.tools.set('fheexecutivedashboard', new FHEExecutiveDashboardTool(this.leann, this.ollama, this.openfhe));
+    this.tools.set('homomorphicanalytics', new HomomorphicAnalyticsTool(this.leann, this.ollama, this.openfhe));
+    this.tools.set('securedatasharing', new SecureDataSharingTool(this.leann, this.ollama, this.openfhe));
+
+    console.log(`[DPO2U] Initialized ${this.tools.size} compliance tools (${this.tools.size - 10} with OpenFHE)`);
   }
 
   /**

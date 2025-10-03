@@ -9,11 +9,14 @@ A **DPO2U MCP Platform** é a primeira solução de compliance que utiliza o Mod
 - **🔐 100% Local**: Dados nunca saem da sua infraestrutura
 - **🤖 AI-Powered**: Análises inteligentes com LLM local (Ollama)
 - **⚡ Real-time**: Verificação contínua de conformidade
-- **📊 10 Ferramentas Especializadas**: Cobertura completa de compliance
+- **📊 16 Ferramentas Especializadas**: 10 standard + 6 com OpenFHE
+- **🔒 Homomorphic Encryption**: Relatórios sem jamais descriptografar dados
 - **🔍 Busca Semântica**: 2856 documentos LGPD/GDPR indexados via LEANN
 - **⏱️ Performance**: <5 segundos por análise, 95% precisão
 
 ## 📋 Ferramentas Disponíveis
+
+### 🛡️ Ferramentas Standard de Compliance (10)
 
 | Ferramenta | Descrição | Tempo |
 |------------|-----------|-------|
@@ -27,6 +30,17 @@ A **DPO2U MCP Platform** é a primeira solução de compliance que utiliza o Mod
 | `simulatebreach` | Simulação de vazamentos | 5s |
 | `verifyconsent` | Auditoria de mecanismos de consentimento | 5s |
 | `calculateprivacyscore` | Score de maturidade em privacidade | 5s |
+
+### 🔐 Ferramentas OpenFHE - Homomorphic Encryption (6)
+
+| Ferramenta | Descrição | Tecnologia |
+|------------|-----------|------------|
+| `encryptedreporting` | Relatórios de compliance com dados sempre criptografados | FHE + ZK |
+| `privatebenchmark` | Benchmark multi-organizacional sem expor métricas | Secure MPC |
+| `zkcomplianceproof` | Provas zero-knowledge de conformidade regulatória | zk-SNARKs |
+| `fheexecutivedashboard` | Dashboard executivo com KPIs totalmente criptografados | Homomorphic |
+| `homomorphicanalytics` | Analytics preservando privacidade em dados criptografados | CKKS |
+| `securedatasharing` | Compartilhamento seguro multi-party sem exposição | Threshold FHE |
 
 ## 🔧 Instalação Rápida
 
@@ -51,6 +65,9 @@ LEANN_API_URL=http://localhost:3001
 LEANN_API_KEY=leann-api-2025
 OLLAMA_API_URL=http://172.18.0.1:11434
 OLLAMA_MODEL=qwen2.5:3b-instruct
+OPENFHE_SCRIPTS_PATH=/opt/openfhe/scripts
+OPENFHE_TEMP_DIR=/tmp/openfhe
+PYTHON_PATH=python3
 EOF
 ```
 
@@ -87,20 +104,44 @@ Adicione ao arquivo `~/.config/claude-desktop/claude_desktop_config.json`:
 
 ## 💡 Exemplos de Uso
 
-### Auditoria Completa de Infraestrutura
+### 🛡️ Ferramentas Standard
+
+#### Auditoria Completa de Infraestrutura
 No Claude Desktop, digite:
 ```
 Use a ferramenta auditinfrastructure para auditar o sistema "producao" com profundidade "deep" para LGPD e GDPR, gerando relatório executivo.
 ```
 
-### Gerar Política de Privacidade
+#### Gerar Política de Privacidade
 ```
 Use generateprivacypolicy para criar uma política de privacidade para a empresa "TechCorp" do tipo "SaaS" que coleta Nome, Email e CPF em português.
 ```
 
-### Avaliar Riscos (DPIA/RIPD)
+#### Avaliar Riscos (DPIA/RIPD)
 ```
 Use assessrisk para avaliar riscos do processamento de "dados de clientes" incluindo dados pessoais e sensíveis, gerando DPIA completa.
+```
+
+### 🔐 Ferramentas OpenFHE - Homomorphic Encryption
+
+#### Relatório Executivo Criptografado
+```
+Use fheexecutivedashboard para gerar dashboard "comprehensive" trimestral com KPIs ["compliance", "risk", "financial"] em nível "board_ready" incluindo tendências e forecasts.
+```
+
+#### Benchmark Privado Multi-Organizacional
+```
+Use privatebenchmark para benchmark de "compliance" no setor "technology" para organização "large" comparando métricas ["lgpd_score", "incident_rate", "response_time"] com nível "maximum" de anonimato.
+```
+
+#### Prova Zero-Knowledge de Compliance
+```
+Use zkcomplianceproof para gerar "compliance_certificate" provando "Organização está 100% conforme LGPD" com evidências ["data_protection", "user_rights", "documentation"] para regulamentações ["LGPD", "GDPR"] usando "zk-SNARK".
+```
+
+#### Analytics Homomórficos
+```
+Use homomorphicanalytics para análise "compliance_score" na fonte "production_db" com entrada criptografada e computação "multi_party" entre organizações ["empresa_a", "empresa_b", "empresa_c"].
 ```
 
 ## 🏗️ Arquitetura
@@ -111,14 +152,14 @@ Use assessrisk para avaliar riscos do processamento de "dados de clientes" inclu
 │   Desktop   │     JSON-RPC 2.0     │   Server     │
 └─────────────┘                      └──────┬───────┘
                                             │
-                    ┌───────────────────────┴───────────────────────┐
-                    │                                               │
-              ┌─────▼─────┐                                 ┌──────▼──────┐
-              │   LEANN   │                                 │   Ollama    │
-              │    API    │                                 │  Local LLM  │
-              └───────────┘                                 └─────────────┘
-              Vector Search                                 AI Generation
-              2856 docs                                    100% Private
+                    ┌───────────────────────┼───────────────────────┐
+                    │                       │                       │
+              ┌─────▼─────┐         ┌──────▼──────┐        ┌──────▼──────┐
+              │   LEANN   │         │   Ollama    │        │   OpenFHE   │
+              │    API    │         │  Local LLM  │        │ Homomorphic │
+              └───────────┘         └─────────────┘        └─────────────┘
+              Vector Search         AI Generation          FHE Computing
+              2856 docs            100% Private           Zero Exposure
 ```
 
 ## 📊 Métricas de Performance
