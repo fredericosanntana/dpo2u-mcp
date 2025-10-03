@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "dpo2u": {
+      "command": "node",
+      "args": ["/opt/dpo2u-mcp/dist/index.js"],
+      "env": {
+        "LEANN_API_URL": "http://localhost:3001",
+        "LEANN_API_KEY": "leann_api_2025",
+        "OLLAMA_API_URL": "http://172.18.0.1:11434",
+        "OLLAMA_MODEL": "qwen2.5:3b-instruct-q4_0",
+        "LOG_DIR": "/var/log/dpo2u-mcp",
+        "LOG_LEVEL": "info"
+      }
+    }
+  }
+}
