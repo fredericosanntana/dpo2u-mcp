@@ -9,24 +9,41 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { getConfigDirectory } from '../utils/pathResolver.js';
+import { getSecret } from '../core/secrets.js';
 
-const WEBHOOK_URL = process.env.DPO2U_N8N_WEBHOOK_URL || 'https://www.n8n.dpo2u.com/webhook/mcp-report';
+const WEBHOOK_URL = getSecret('DPO2U_N8N_WEBHOOK_URL') || process.env.DPO2U_N8N_WEBHOOK_URL || 'https://www.n8n.dpo2u.com/webhook/mcp-report';
+const WEBHOOK_TOKEN = getSecret('DPO2U_N8N_WEBHOOK_TOKEN');
 const CONFIG_PATH = getConfigDirectory();
 const RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 2000; // 2 segundos
 
+type WebhookPayload = Record<string, any>;
+
+type WebhookLog = {
+  timestamp: string;
+  status: 'success' | 'error';
+  type: string;
+  id: string;
+  response?: any;
+  error?: string;
+  code?: string;
+};
+
 export class N8nWebhookIntegration {
+  private webhookUrl: string;
+  private logFile: string;
+  private logs: WebhookLog[] = [];
+
   constructor() {
     this.webhookUrl = WEBHOOK_URL;
     this.logFile = path.join(CONFIG_PATH, 'webhook-logs.json');
-    this.logs = [];
     this.loadLogs();
   }
 
   /**
    * Carrega logs anteriores
    */
-  loadLogs() {
+  loadLogs(): void {
     if (fs.existsSync(this.logFile)) {
       try {
         this.logs = JSON.parse(fs.readFileSync(this.logFile, 'utf-8'));
@@ -39,7 +56,7 @@ export class N8nWebhookIntegration {
   /**
    * Salva logs
    */
-  saveLogs() {
+  saveLogs(): void {
     try {
       if (!fs.existsSync(CONFIG_PATH)) {
         fs.mkdirSync(CONFIG_PATH, { recursive: true });
@@ -53,7 +70,7 @@ export class N8nWebhookIntegration {
   /**
    * Envia relatório para o webhook
    */
-  async sendReport(reportData, retryCount = 0) {
+  async sendReport(reportData: WebhookPayload, retryCount = 0): Promise<{ success: boolean; response?: any; status?: number; error?: string; attempts?: number }> {
     const payload = {
       timestamp: new Date().toISOString(),
       report_type: reportData.type || 'generic',
@@ -70,11 +87,17 @@ export class N8nWebhookIntegration {
     try {
       console.log(`📤 Enviando relatório para webhook n8n...`);
 
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'X-Source': 'DPO2U-MCP'
+      };
+
+      if (WEBHOOK_TOKEN) {
+        headers['Authorization'] = `Bearer ${WEBHOOK_TOKEN}`;
+      }
+
       const response = await axios.post(this.webhookUrl, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Source': 'DPO2U-MCP'
-        },
+        headers,
         timeout: 30000 // 30 segundos
       });
 
@@ -88,8 +111,8 @@ export class N8nWebhookIntegration {
         status: response.status
       };
 
-    } catch (error) {
-      console.error(`❌ Erro enviando relatório (tentativa ${retryCount + 1}):`, error.message);
+    } catch (error: any) {
+      console.error(`❌ Erro enviando relatório (tentativa ${retryCount + 1}):`, error?.message || error);
 
       // Log erro
       this.logError(payload, error);
@@ -103,7 +126,7 @@ export class N8nWebhookIntegration {
 
       return {
         success: false,
-        error: error.message,
+        error: error?.message,
         attempts: retryCount + 1
       };
     }
@@ -112,7 +135,7 @@ export class N8nWebhookIntegration {
   /**
    * Envia relatório de auditoria
    */
-  async sendAuditReport(auditData) {
+  async sendAuditReport(auditData: Record<string, any>): Promise<any> {
     const report = {
       type: 'audit',
       id: auditData.audit_id || `AUDIT-${Date.now()}`,
@@ -134,7 +157,7 @@ export class N8nWebhookIntegration {
   /**
    * Envia relatório de risco
    */
-  async sendRiskReport(riskData) {
+  async sendRiskReport(riskData: Record<string, any>): Promise<any> {
     const report = {
       type: 'risk',
       id: riskData.risk_id || `RISK-${Date.now()}`,
@@ -153,7 +176,7 @@ export class N8nWebhookIntegration {
   /**
    * Envia relatório DPO
    */
-  async sendDPOReport(dpoData) {
+  async sendDPOReport(dpoData: Record<string, any>): Promise<any> {
     const report = {
       type: 'dpo',
       id: dpoData.report_id || `DPO-${Date.now()}`,
@@ -173,7 +196,7 @@ export class N8nWebhookIntegration {
   /**
    * Envia relatório de consentimento
    */
-  async sendConsentReport(consentData) {
+  async sendConsentReport(consentData: Record<string, any>): Promise<any> {
     const report = {
       type: 'consent',
       id: consentData.consent_id || `CONSENT-${Date.now()}`,
@@ -193,7 +216,7 @@ export class N8nWebhookIntegration {
   /**
    * Envia relatório de privacy score
    */
-  async sendPrivacyScoreReport(scoreData) {
+  async sendPrivacyScoreReport(scoreData: Record<string, any>): Promise<any> {
     const report = {
       type: 'privacy_score',
       id: scoreData.score_id || `SCORE-${Date.now()}`,
@@ -213,7 +236,7 @@ export class N8nWebhookIntegration {
   /**
    * Envia notificação de setup inicial
    */
-  async sendSetupNotification(setupData) {
+  async sendSetupNotification(setupData: Record<string, any>): Promise<any> {
     const report = {
       type: 'setup',
       id: setupData.setup_id || `SETUP-${Date.now()}`,
@@ -231,7 +254,7 @@ export class N8nWebhookIntegration {
   /**
    * Obtém informações da empresa
    */
-  getCompanyInfo() {
+  getCompanyInfo(): { name: string; cnpj: string; email: string } {
     try {
       const configFile = path.join(CONFIG_PATH, 'company.json');
       if (fs.existsSync(configFile)) {
@@ -256,8 +279,8 @@ export class N8nWebhookIntegration {
   /**
    * Log de sucesso
    */
-  logSuccess(payload, response) {
-    const log = {
+  logSuccess(payload: WebhookPayload, response: any): void {
+    const log: WebhookLog = {
       timestamp: new Date().toISOString(),
       status: 'success',
       type: payload.report_type,
@@ -278,14 +301,14 @@ export class N8nWebhookIntegration {
   /**
    * Log de erro
    */
-  logError(payload, error) {
-    const log = {
+  logError(payload: WebhookPayload, error: any): void {
+    const log: WebhookLog = {
       timestamp: new Date().toISOString(),
       status: 'error',
       type: payload.report_type,
       id: payload.report_id,
-      error: error.message,
-      code: error.code || 'UNKNOWN'
+      error: error?.message,
+      code: error?.code || 'UNKNOWN'
     };
 
     this.logs.push(log);
@@ -301,8 +324,8 @@ export class N8nWebhookIntegration {
   /**
    * Obter estatísticas dos envios
    */
-  getStats() {
-    const stats = {
+  getStats(): Record<string, any> {
+    const stats: Record<string, any> = {
       total: this.logs.length,
       success: 0,
       error: 0,

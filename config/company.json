@@ -1,59 +1,29 @@
 {
-  "name": "Empresa Demo LTDA",
-  "cnpj": "12.345.678/0001-90",
-  "email": "contato@empresademo.com.br",
-  "phone": "(11) 98765-4321",
-  "address": "Av. Paulista, 1000 - São Paulo, SP",
-  "website": "https://www.empresademo.com.br",
+  "name": "DPO2U Example",
+  "cnpj": "00.000.000/0000-00",
+  "email": "example@dpo2u.com",
+  "phone": "N/A",
+  "address": "N/A",
+  "website": "https://www.dpo2u.com",
   "sector": "Tecnologia",
-  "size": "Média",
+  "size": "Demo",
   "dpo": {
-    "name": "João Silva",
-    "email": "dpo@empresademo.com.br",
-    "phone": "(11) 98765-4322",
-    "formalized": true
+    "name": "Example DPO",
+    "email": "dpo@dpo2u.com",
+    "phone": "N/A",
+    "formalized": false
   },
   "checklistAnswers": {
-    "governance": {
-      "hasPrivacyPolicy": "sim",
-      "hasDataProtectionOfficer": "sim",
-      "hasDataMapping": "parcial",
-      "hasRiskAssessment": "não"
-    },
-    "dataManagement": {
-      "hasConsentManagement": "sim",
-      "hasRetentionPolicy": "parcial",
-      "hasDataMinimization": "sim",
-      "hasAccessControls": "sim"
-    },
-    "security": {
-      "hasEncryption": "sim",
-      "hasAccessLogs": "sim",
-      "hasIncidentResponse": "parcial",
-      "hasSecurityTraining": "não"
-    },
-    "thirdParties": {
-      "hasVendorAssessments": "parcial",
-      "hasDataProcessingAgreements": "sim",
-      "hasInternationalTransfers": "não"
-    },
-    "rights": {
-      "hasSubjectRightsProcess": "sim",
-      "hasDataPortability": "parcial",
-      "hasDeletionProcess": "sim",
-      "hasNotificationProcess": "sim"
-    },
-    "incidents": {
-      "hasBreachNotification": "sim",
-      "hasIncidentLog": "parcial",
-      "hasRecoveryPlan": "não"
-    }
+    "governance": { "hasPrivacyPolicy": "parcial" },
+    "dataManagement": { "hasConsentManagement": "parcial" },
+    "security": { "hasEncryption": "parcial" },
+    "thirdParties": { "hasVendorAssessments": "parcial" },
+    "rights": { "hasSubjectRightsProcess": "parcial" },
+    "incidents": { "hasBreachNotification": "parcial" }
   },
-  "evidencePaths": {
-    "privacyPolicy": "/docs/policies/privacy-policy.pdf",
-    "dpoAppointment": "/docs/legal/dpo-appointment.pdf",
-    "dataMapping": "/docs/data/mapping-2024.xlsx"
-  },
-  "configuredAt": "2024-10-02T18:00:00Z",
-  "lastUpdated": "2024-10-02T18:00:00Z"
+  "evidencePaths": {},
+  "configuredAt": "2025-01-01T00:00:00Z",
+  "lastUpdated": "2025-01-01T00:00:00Z",
+  "setupType": "example",
+  "complianceScore": 50
 }

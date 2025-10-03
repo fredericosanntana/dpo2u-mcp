@@ -141,6 +141,57 @@ Variáveis suportadas:
 | `MCP_COMPANY_HAS_DPO` | Use `s`/`n` ou `true`/`false` para informar se já existe DPO |
 | `DPO2U_MCP_BASE_PATH` | Define o diretório base do projeto quando executado fora de `/opt/dpo2u-mcp` |
 | `DPO2U_OBSIDIAN_PATH` | Ajusta o caminho do vault de compliance, quando diferente do padrão |
+| `DPO2U_HTTP_PORT` | Porta para a API HTTP (`serve:http`) |
+| `DPO2U_HTTP_API_KEY` | Token opcional para proteger as rotas HTTP (`x-api-key`) |
+| `DPO2U_SECRETS_PROVIDER` | `env` (default) ou `file` para carregar segredos de `config/secrets.json` |
+| `DPO2U_SECRETS_FILE` | Caminho customizado do arquivo de segredos |
+
+### 🌐 API HTTP para Ferramentas MCP
+
+```bash
+# iniciar a API na porta padrão 4000
+npm run start:http
+
+# ou via CLI
+npx dpo2u-mcp serve:http --port 4500
+```
+
+Endpoints principais:
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/health` | Status da API e número de ferramentas disponíveis |
+| GET | `/tools` | Lista de ferramentas MCP registradas |
+| POST | `/tools/:name/execute` | Executa uma ferramenta passando `{ "arguments": { ... } }` |
+
+> **Obs.:** Defina `DPO2U_HTTP_API_KEY` para exigir cabeçalho `x-api-key` em todas as requisições.
+
+### 🧰 CLI Unificada
+
+O pacote expõe um binário `dpo2u-mcp` com comandos auxiliares:
+
+```bash
+npx dpo2u-mcp serve:mcp      # inicia o servidor MCP (Claude/Desktop)
+npx dpo2u-mcp serve:http     # inicia a API HTTP
+npx dpo2u-mcp tools:list     # lista ferramentas disponíveis
+npx dpo2u-mcp tools:call auditinfrastructure -a '{"target":"prod","depth":"deep","compliance":["LGPD"]}'
+npx dpo2u-mcp onboarding:reset   # limpa arquivos para refazer onboarding
+npx dpo2u-mcp onboarding:quick --company "Empresa X" --email contato@x.com --has-dpo
+```
+
+### 🔐 Gerenciamento de Segredos
+
+Armazene chaves sensíveis (LEANN, HTTP, n8n) em variáveis de ambiente ou num arquivo `config/secrets.json`:
+
+```json
+{
+  "LEANN_API_KEY": "sk-...",
+  "DPO2U_HTTP_API_KEY": "token-http",
+  "DPO2U_N8N_WEBHOOK_TOKEN": "token-n8n"
+}
+```
+
+Ative com `export DPO2U_SECRETS_PROVIDER=file` (opcionalmente `DPO2U_SECRETS_FILE=/caminho/custom.json`).
 
 ## 💡 Exemplos de Uso
 

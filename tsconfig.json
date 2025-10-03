@@ -21,9 +21,16 @@
   },
   "include": [
     "src/index.ts",
+    "src/httpServer.ts",
+    "src/cli.ts",
+    "src/core/**/*.ts",
+    "src/server/**/*.ts",
+    "src/utils/**/*.ts",
     "src/integrations/leann.ts",
     "src/integrations/ollama.ts",
-    "src/tools/auditInfrastructure.ts"
+    "src/integrations/openfhe.ts",
+    "src/tools/auditInfrastructure.ts",
+    "src/tools/fheTools.ts"
   ],
   "exclude": ["node_modules", "dist", "tests"]
 }
