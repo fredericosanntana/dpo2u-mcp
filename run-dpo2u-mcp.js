@@ -12,9 +12,13 @@ import { format } from 'date-fns';
 import { runCompanySetup } from './src/initialization/companySetup.js';
 import evidenceCollector from './src/initialization/evidenceCollector.js';
 import n8nWebhook from './src/integrations/n8nWebhook.js';
+import {
+  getConfigDirectory,
+  getObsidianCompliancePath,
+} from './src/utils/pathResolver.js';
 
-const CONFIG_PATH = '/opt/dpo2u-mcp/config';
-const OBSIDIAN_PATH = '/var/lib/docker/volumes/docker-compose_obsidian-vaults/_data/MyVault/04-DPO2U-Compliance';
+const CONFIG_PATH = getConfigDirectory();
+const OBSIDIAN_PATH = getObsidianCompliancePath();
 
 // Interface readline
 const rl = readline.createInterface({

@@ -1,18 +1,35 @@
-# DPO2U MCP Platform - AI Compliance Engine
+# DPO2U MCP Platform - Hybrid AI Compliance Engine
 
-## 🚀 Primeira Plataforma MCP-Native para Compliance LGPD/GDPR
+## 🚀 **NOVA ARQUITETURA HÍBRIDA 2025** - Self-Hosted + SaaS
 
-A **DPO2U MCP Platform** é a primeira solução de compliance que utiliza o Model Context Protocol (MCP) da Anthropic para oferecer análises de conformidade LGPD/GDPR assistidas por IA diretamente no Claude Desktop.
+A **DPO2U MCP Platform** é a **única solução de compliance** que combina:
+- **100% dados locais** (máxima privacidade)
+- **Conhecimento jurídico proprietário** via SaaS (expertise premium)
 
-### 🎯 Características Principais
+### 🏗️ **Arquitetura Revolucionária**
 
-- **🔐 100% Local**: Dados nunca saem da sua infraestrutura
-- **🤖 AI-Powered**: Análises inteligentes com LLM local (Ollama)
-- **⚡ Real-time**: Verificação contínua de conformidade
-- **📊 16 Ferramentas Especializadas**: 10 standard + 6 com OpenFHE
-- **🔒 Homomorphic Encryption**: Relatórios sem jamais descriptografar dados
-- **🔍 Busca Semântica**: 2856 documentos LGPD/GDPR indexados via LEANN
-- **⏱️ Performance**: <5 segundos por análise, 95% precisão
+```
+┌─────────────────────────┐    ┌─────────────────────┐
+│   100% SELF-HOSTED      │    │    SaaS DPO2U      │
+│ ┌─────────────────────┐ │    │ ┌─────────────────┐ │
+│ │ MCP-DPO2U (17 tools)│ │◄──►│ │ LEANN API       │ │
+│ │ Ollama LLM Local    │ │    │ │ Knowledge Base  │ │
+│ │ OpenFHE Encryption  │ │    │ │ 2856+ docs      │ │
+│ │ All Sensitive Data  │ │    │ │ Compliance Intel│ │
+│ └─────────────────────┘ │    │ └─────────────────┘ │
+│ Cliente = Controle Total│    │ DPO2U = IP Protected│
+└─────────────────────────┘    └─────────────────────┘
+```
+
+### 🎯 **Proposta de Valor Única**
+
+- **🔐 100% Local Data**: Seus dados NUNCA saem da infraestrutura
+- **🧠 Premium Knowledge**: Acesso ao conhecimento LGPD/GDPR mais especializado do mercado
+- **⚡ Ultra Performance**: LEANN API com 91.97% cache hit rate (15ms vs 44s)
+- **🤖 AI-Powered**: Ollama LLM local + OpenFHE encryption
+- **📊 17 Ferramentas**: Compliance automation completa
+- **🔒 Zero-Knowledge**: Evidência criptográfica sem exposição de dados
+- **🎯 95%+ Compliance**: Remediação automática de gaps
 
 ## 📋 Ferramentas Disponíveis
 
@@ -101,6 +118,29 @@ Adicione ao arquivo `~/.config/claude-desktop/claude_desktop_config.json`:
 # Feche e abra novamente o Claude Desktop
 # As ferramentas estarão disponíveis automaticamente
 ```
+
+### ▶️ Uso no Codex CLI / Ambientes Não Interativos
+
+Para executar o MCP diretamente pelo Codex CLI (ou qualquer ambiente sem TTY), defina variáveis de ambiente que habilitam o onboarding automático:
+
+```bash
+export MCP_AUTO_ONBOARDING=quick
+export MCP_COMPANY_NAME="DPO2U CLI"
+export MCP_COMPANY_EMAIL="cli@dpo2u.com"
+export DPO2U_MCP_BASE_PATH="$(pwd)"
+npm run build
+node dist/index.js
+```
+
+Variáveis suportadas:
+
+| Variável | Função |
+|----------|--------|
+| `MCP_AUTO_ONBOARDING` | `quick` para setup automático mínimo, `skip` para gerar config padrão sem prompts |
+| `MCP_COMPANY_NAME`, `MCP_COMPANY_EMAIL`, `MCP_COMPANY_CNPJ` | Sobrescrevem dados usados no onboarding rápido |
+| `MCP_COMPANY_HAS_DPO` | Use `s`/`n` ou `true`/`false` para informar se já existe DPO |
+| `DPO2U_MCP_BASE_PATH` | Define o diretório base do projeto quando executado fora de `/opt/dpo2u-mcp` |
+| `DPO2U_OBSIDIAN_PATH` | Ajusta o caminho do vault de compliance, quando diferente do padrão |
 
 ## 💡 Exemplos de Uso
 

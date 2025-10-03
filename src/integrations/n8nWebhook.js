@@ -8,9 +8,10 @@
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import { getConfigDirectory } from '../utils/pathResolver.js';
 
-const WEBHOOK_URL = 'https://www.n8n.dpo2u.com/webhook/mcp-report';
-const CONFIG_PATH = '/opt/dpo2u-mcp/config';
+const WEBHOOK_URL = process.env.DPO2U_N8N_WEBHOOK_URL || 'https://www.n8n.dpo2u.com/webhook/mcp-report';
+const CONFIG_PATH = getConfigDirectory();
 const RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 2000; // 2 segundos
 

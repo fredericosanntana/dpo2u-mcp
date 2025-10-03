@@ -7,6 +7,10 @@
 
 import { spawn } from 'child_process';
 import fs from 'fs';
+import path from 'path';
+
+const MCP_ENTRY = process.env.DPO2U_MCP_ENTRY ||
+  path.resolve(process.env.DPO2U_MCP_BASE_PATH || process.cwd(), 'dist', 'index.js');
 
 // Test data for each tool
 const testCases = [
@@ -103,7 +107,7 @@ function testTool(toolCase, index) {
       id: index + 1
     };
 
-    const child = spawn('node', ['/opt/dpo2u-mcp/dist/index.js'], {
+    const child = spawn('node', [MCP_ENTRY], {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: {
         ...process.env,

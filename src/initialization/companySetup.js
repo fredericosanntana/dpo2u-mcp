@@ -9,9 +9,13 @@ import readline from 'readline';
 import fs from 'fs';
 import path from 'path';
 import { format } from 'date-fns';
+import {
+  getConfigDirectory,
+  getObsidianCompliancePath,
+} from '../utils/pathResolver.js';
 
-const CONFIG_PATH = '/opt/dpo2u-mcp/config';
-const OBSIDIAN_PATH = '/var/lib/docker/volumes/docker-compose_obsidian-vaults/_data/MyVault/04-DPO2U-Compliance';
+const CONFIG_PATH = getConfigDirectory();
+const OBSIDIAN_PATH = getObsidianCompliancePath();
 
 // Criar interface para input
 const rl = readline.createInterface({

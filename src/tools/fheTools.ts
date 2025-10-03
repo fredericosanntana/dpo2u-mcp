@@ -333,3 +333,61 @@ export class SecureDataSharingTool {
     return await secureDataSharing(args, { openfhe: this.openfhe });
   }
 }
+
+export class ComplianceRemediationTool {
+  constructor(
+    private leann: LEANNIntegration,
+    private ollama: OllamaIntegration,
+    private openfhe: OpenFHEIntegration
+  ) {}
+
+  getDescription(): string {
+    return 'Automatically detects, evaluates and corrects compliance gaps with cryptographic evidence - elevates compliance score from 78% to 95%+';
+  }
+
+  getInputSchema(): any {
+    return {
+      type: 'object',
+      properties: {
+        remediation_scope: {
+          type: 'string',
+          enum: ['critical', 'medium', 'low', 'all'],
+          description: 'Scope of compliance gaps to address'
+        },
+        audit_report_id: {
+          type: 'string',
+          description: 'ID of audit report to use as baseline (optional)'
+        },
+        auto_apply: {
+          type: 'boolean',
+          description: 'Automatically apply corrections (false for planning only)'
+        },
+        dry_run: {
+          type: 'boolean',
+          description: 'Simulate remediation without making changes'
+        },
+        compliance_target: {
+          type: 'number',
+          description: 'Target compliance score (0-100)',
+          minimum: 0,
+          maximum: 100
+        },
+        include_evidence: {
+          type: 'boolean',
+          description: 'Generate cryptographic evidence of improvements'
+        }
+      },
+      required: ['remediation_scope', 'auto_apply', 'dry_run', 'compliance_target']
+    };
+  }
+
+  async execute(args: any): Promise<any> {
+    // Import the remediation function
+    const { executeComplianceRemediation } = await import('./remediation/compliance-remediation.js');
+    return await executeComplianceRemediation(args, {
+      openfhe: this.openfhe,
+      leann: this.leann,
+      ollama: this.ollama
+    });
+  }
+}

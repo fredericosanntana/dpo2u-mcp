@@ -8,15 +8,22 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
+import {
+  getBasePath,
+  getConfigDirectory,
+  getObsidianCompliancePath,
+} from '../utils/pathResolver.js';
 
-const OBSIDIAN_PATH = '/var/lib/docker/volumes/docker-compose_obsidian-vaults/_data/MyVault/04-DPO2U-Compliance';
-const CONFIG_PATH = '/opt/dpo2u-mcp/config';
-const SEARCH_PATHS = [
-  '/opt/dpo2u-mcp',
-  '/opt/docker-compose',
-  '/var/log',
-  OBSIDIAN_PATH
-];
+const BASE_PATH = getBasePath();
+const OBSIDIAN_PATH = getObsidianCompliancePath();
+const CONFIG_PATH = getConfigDirectory();
+const DOCKER_PATH = process.env.DPO2U_DOCKER_PATH || '/opt/docker-compose';
+const EXTRA_PATHS = (process.env.DPO2U_EVIDENCE_PATHS || '')
+  .split(',')
+  .map((p) => p.trim())
+  .filter((p) => p.length > 0);
+
+const SEARCH_PATHS = [BASE_PATH, DOCKER_PATH, '/var/log', OBSIDIAN_PATH, ...EXTRA_PATHS];
 
 export class EvidenceCollector {
   constructor() {
